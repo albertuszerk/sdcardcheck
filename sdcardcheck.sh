@@ -42,6 +42,12 @@ if [ "$APP_LANG" == "en" ]; then
     TXT_SPEED_READ="Read"
     TXT_ERR_MEASURE="Measurement Error"
 
+    # Buttons (System Override)
+    TXT_BTN_YES="Yes"
+    TXT_BTN_NO="No"
+    TXT_BTN_OK="OK"
+    TXT_BTN_CANCEL="Cancel"
+
 else
     # DEUTSCH (Standard)
     TXT_WELCOME="Willkommen beim App-Wizard.\nBitte waehle eine Aktion:"
@@ -75,6 +81,12 @@ else
     TXT_SPEED_WRITE="Schreiben"
     TXT_SPEED_READ="Lesen"
     TXT_ERR_MEASURE="Messfehler"
+
+    # Buttons (System Override)
+    TXT_BTN_YES="Ja"
+    TXT_BTN_NO="Nein"
+    TXT_BTN_OK="OK"
+    TXT_BTN_CANCEL="Abbrechen"
 fi
 # --- ENDE SPRACH-VARIABLEN ---
 
@@ -88,7 +100,8 @@ while true; do
         "START" "$TXT_BTN_START" \
         "UNINSTALL" "$TXT_BTN_UNINSTALL" \
         "EXIT" "$TXT_BTN_EXIT" \
-        --width=650 --height=350 --hide-header)
+        --width=650 --height=350 --hide-header \
+        --ok-label="$TXT_BTN_OK" --cancel-label="$TXT_BTN_CANCEL")
 
     if [ $? -ne 0 ] || [ "$ACTION" == "EXIT" ]; then
         break
@@ -98,12 +111,12 @@ while true; do
         rm -f ~/.local/bin/sdcardcheck.sh
         rm -f ~/.local/share/applications/sdcardcheck.desktop
         update-desktop-database ~/.local/share/applications/ 2>/dev/null
-        zenity --info --title="Deinstallation" --text="$TXT_UNINSTALL_OK"
+        zenity --info --title="Deinstallation" --text="$TXT_UNINSTALL_OK" --ok-label="$TXT_BTN_OK"
         break
     fi
 
     if [ "$ACTION" == "START" ]; then
-        TARGET_DIR=$(zenity --file-selection --directory --title="$TXT_SEL_DRIVE")
+        TARGET_DIR=$(zenity --file-selection --directory --title="$TXT_SEL_DRIVE" --confirm-overwrite)
         if [ -z "$TARGET_DIR" ]; then continue; fi
 
         DEVICE=$(df -P "$TARGET_DIR" | tail -1 | awk '{print $1}')
@@ -116,29 +129,29 @@ while true; do
         THEO_SIZE=$(df -h "$TARGET_DIR" | tail -1 | awk '{print $2}')
 
         WARN_MSG=$(printf "$TXT_WARN_TEXT" "$TARGET_DIR")
-        zenity --question --title="$TXT_WARN_TITLE" --text="$WARN_MSG" --icon-name=dialog-warning
+        zenity --question --title="$TXT_WARN_TITLE" --text="$WARN_MSG" --icon-name=dialog-warning --ok-label="$TXT_BTN_YES" --cancel-label="$TXT_BTN_NO"
         if [ $? -ne 0 ]; then continue; fi
 
         rm -rf "$TARGET_DIR"/*
         if [ $? -ne 0 ]; then
-            zenity --error --text="$TXT_ERR_PERM"
+            zenity --error --text="$TXT_ERR_PERM" --ok-label="$TXT_BTN_OK"
             continue
         fi
 
-        zenity --info --title="Test startet" --text="$TXT_INFO_START" --timeout=3
+        zenity --info --title="Test startet" --text="$TXT_INFO_START" --timeout=3 --ok-label="$TXT_BTN_OK"
 
-        stdbuf -o0 f3write "$TARGET_DIR" | stdbuf -o0 tr '\r' '\n' | while IFS= read -r line; do echo "# $line"; done | zenity --progress --title="$TXT_PROG_WRITE" --text="$TXT_INIT" --pulsate --auto-close --auto-kill --width=600
+        stdbuf -o0 f3write "$TARGET_DIR" | stdbuf -o0 tr '\r' '\n' | while IFS= read -r line; do echo "# $line"; done | zenity --progress --title="$TXT_PROG_WRITE" --text="$TXT_INIT" --pulsate --auto-close --auto-kill --width=600 --cancel-label="$TXT_BTN_CANCEL"
         
         if [ ${PIPESTATUS[0]} -ne 0 ]; then
-            zenity --error --text="$TXT_ERR_WRITE"
+            zenity --error --text="$TXT_ERR_WRITE" --ok-label="$TXT_BTN_OK"
             RESULT_CAP="$TXT_RES_WRITE_ERR"
             REAL_SIZE="$TXT_RES_NO_WRITE"
         else
             rm -f /tmp/f3read.log
-            stdbuf -o0 f3read "$TARGET_DIR" | stdbuf -o0 tee /tmp/f3read.log | stdbuf -o0 tr '\r' '\n' | while IFS= read -r line; do echo "# $line"; done | zenity --progress --title="$TXT_PROG_READ" --text="$TXT_VERIFYING" --pulsate --auto-close --auto-kill --width=600
+            stdbuf -o0 f3read "$TARGET_DIR" | stdbuf -o0 tee /tmp/f3read.log | stdbuf -o0 tr '\r' '\n' | while IFS= read -r line; do echo "# $line"; done | zenity --progress --title="$TXT_PROG_READ" --text="$TXT_VERIFYING" --pulsate --auto-close --auto-kill --width=600 --cancel-label="$TXT_BTN_CANCEL"
 
             if [ ${PIPESTATUS[0]} -ne 0 ]; then
-                zenity --error --text="$TXT_ERR_READ"
+                zenity --error --text="$TXT_ERR_READ" --ok-label="$TXT_BTN_OK"
                 RESULT_CAP="$TXT_RES_FAKE"
                 
                 REAL_SIZE=$(grep "Data OK:" /tmp/f3read.log | awk '{print $3" "$4}')
@@ -151,7 +164,7 @@ while true; do
 
         rm -f "$TARGET_DIR"/*.h2w
 
-        zenity --info --title="$TXT_SPEED_TITLE" --text="$TXT_SPEED_TEXT" --timeout=3
+        zenity --info --title="$TXT_SPEED_TITLE" --text="$TXT_SPEED_TEXT" --timeout=3 --ok-label="$TXT_BTN_OK"
         
         TEST_FILE="$TARGET_DIR/xcheck_speed.bin"
         
@@ -166,6 +179,6 @@ while true; do
         rm -f "$TEST_FILE"
 
         SUMMARY_MSG=$(printf "$TXT_SUMMARY_TEXT" "$DRIVE_MODEL" "$THEO_SIZE" "$REAL_SIZE" "$RESULT_CAP" "$SPEED_VAL")
-        zenity --info --title="$TXT_SUMMARY_TITLE" --text="$SUMMARY_MSG"
+        zenity --info --title="$TXT_SUMMARY_TITLE" --text="$SUMMARY_MSG" --ok-label="$TXT_BTN_OK"
     fi
 done
