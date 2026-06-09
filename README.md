@@ -23,9 +23,9 @@ Hier finden Sie eine Uebersicht der einzelnen Schritte des Wizards:
 |:---:|:---:|
 | ![Verifikation](images/screen6.png) | ![Verifikation](images/screen7.png) |
 
-| 7. Finale Test-Zusammenfassung| |
-|:---:|:---:|
-| ![Test-Zusammenfassung](images/screen8.png) | |
+| 7. Finale Test-Zusammenfassung|
+|:---:|
+| ![Test-Zusammenfassung](images/screen8.png) |
 
 ---
 
