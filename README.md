@@ -15,17 +15,17 @@ Hier finden Sie eine Uebersicht der einzelnen Schritte des Wizards:
 |:---:|:---:|
 | ![Hauptmenue](images/screen1.png) | ![App Ansicht](images/screen2.png) |
 
-| 3. Sicherheitswarnung | 4. Information |
+| 3. Sicherheitswarnung | 4. Prozess Fortschrittsanzeige (.h2w Files) |
 |:---:|:---:|
-| ![Sicherheitswarnung](images/screen3.png) | ![Information](images/screen4.png) |
+| ![Sicherheitswarnung](images/screen3.png) | ![Prozess Fortschrittsanzeige](images/screen5.png) |
 
-| 5. Prozess Fortschrittsanzeige (.h2w Files) | 6. Verifikation |
+| 5. Verifikation | 6. Verifikation (Datenvalidierung) |
 |:---:|:---:|
-| ![Prozess Fortschrittsanzeige](images/screen5.png) | ![Verifikation](images/screen6.png) |
+| ![Verifikation](images/screen6.png) | ![Verifikation](images/screen7.png) |
 
-| 7. Verifikation (Datenvalidierung) | 8. Finale Test-Zusammenfassung |
+| 7. Finale Test-Zusammenfassung| |
 |:---:|:---:|
-| ![Verifikation](images/screen7.png) | ![Test-Zusammenfassung](images/screen8.png) |
+| ![Test-Zusammenfassung](images/screen8.png) | |
 
 ---
 
