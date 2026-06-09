@@ -1,4 +1,4 @@
-# sdcardcheck
+
 ### X-Capacity & Speed Validator for sd cards v1.0
 
 ![App Banner](banner1.png)
@@ -41,18 +41,10 @@ Hier finden Sie eine Uebersicht der einzelnen Schritte des Wizards:
 Das Projekt laesst sich mit einem einzigen Befehl direkt ueber das Terminal einrichten. Es wird ein vollwertiger Starter im Zorin-Startmenue hinterlegt.
 
 ### Standard-Installation (Deutsch)
-```bash
-bash <(curl -sL [https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/install.sh](https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/install.sh))
-bash <(curl -sL [https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/uninstall.sh](https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/uninstall.sh))
-```
-> **HINWEIS: DER ZWEITE BEFEHL FUEHRT EINE KOMPLETTE DEINSTALLATION / LOESCHUNG DER APP DURCH.**
+```bash <(curl -sL (https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/install.sh))```
 
 ### Installation mit Sprachparameter (Englisch)
-```bash
-bash <(curl -sL [https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/install.sh](https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/install.sh)) en
-bash <(curl -sL [https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/uninstall.sh](https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/uninstall.sh)) en
-```
-> **HINWEIS: DER ZWEITE BEFEHL FUEHRT EINE KOMPLETTE DEINSTALLATION / LOESCHUNG DER APP DURCH.**
+```bash <(curl -sL (https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/install.sh)) en```
 
 ---
 
@@ -66,9 +58,8 @@ Oeffnen Sie die App ueber das Startmenue und waehlen Sie die Option **"UNINSTALL
 ### Methode 2: Ueber das Terminal (Manueller Befehl)
 Fuehren Sie folgenden Befehl aus, um eine vollstaendige Deinstallation durchzufuehren:
 
-```bash
-bash <(curl -sL [https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/uninstall.sh](https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/uninstall.sh))
-```
+```bash <(curl -sL (https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/uninstall.sh))```
+
 > **DIESER BEFEHL FUEHRT EINE VOLLSTAENDIGE DEINSTALLATION DURCH UND ENTFERNT ALLE VERKNUEPFUNGEN.**
 
 ---
