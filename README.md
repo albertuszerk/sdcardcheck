@@ -29,7 +29,7 @@ Hier finden Sie eine Uebersicht der einzelnen Schritte des Wizards:
 
 * **Zweistufige Validierung:** Vollstaendiges Beschreiben des Laufwerks mit anschliessender Verifizierung via `f3`-Engine, um Mogel-Speicher (Fake Capacity) gnadenlos zu entlarven.
 * **Intelligenter Live-Fortschritt:** Echtzeit-Anzeige von Schreib-/Lesegeschwindigkeit, geschriebenen Datenmengen und geschaetzter Restlaufzeit (ETA) direkt im grafischen Fenster.
-* **Hardware-Erkennung:** Automatisches Auslesen des echten Controller-Herstellers und Modellnamens via `lsblk` fuer eine wasserdichte AliExpress-Beweisfuehrung.
+* **Hardware-Erkennung:** Automatisches Auslesen des echten Controller-Herstellers und Modellnamens via `lsblk` fuer eine wasserdichte Beweisfuehrung.
 * **Exakte Speicheranalyse:** Gegenueberstellung der theoretischen (vom Haendler manipulierten) Grösse und der real ermittelten physischen Speikerkapazitaet.
 * **Praeziser Speed-Test:** Integrierter Mini-Laufwerkstest (500 MB), der den Linux-Arbeitsspeicher-Cache (`RAM-Cache`) durch `fdatasync` und `iflag=direct` komplett umgeht, um echte Hardware-Limits zu messen.
 * **Volle Zweisprachigkeit:** Nahtlose Unterstuetzung fuer Deutsch und Englisch ueber einfache Start-Parameter.
