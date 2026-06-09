@@ -3,7 +3,7 @@
 
 ![App Banner](images/banner1.png)
 
-Ein professionelles, grafisches Werkzeug fuer Linux (speziell optimiert fuer Zorin OS), um die tatsaechliche Kapazitaet und Geschwindigkeit von Speichergeraeten (insbesondere MicroSD-Karten von Plattformen wie AliExpress) zuverlaessig zu ueberpruefen. Das Tool entlarvt gefaelschte Controller-Angaben (Fake Capacity) manipulationssicher und liefert exakte Hardware-Messergebnisse fuer eventuelle Haendlerdispute.
+Ein professionelles, grafisches Werkzeug fuer Linux, um die tatsaechliche Kapazitaet und Geschwindigkeit von Speichergeraeten zuverlaessig zu ueberpruefen. Das Tool entlarvt gefaelschte Controller-Angaben (Fake Capacity) manipulationssicher und liefert exakte Hardware-Messergebnisse fuer eventuelle Haendlerdispute.
 
 ---
 
