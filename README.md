@@ -11,17 +11,21 @@ Ein professionelles, grafisches Werkzeug fuer Linux, um die tatsaechliche Kapazi
 
 Hier finden Sie eine Uebersicht der einzelnen Schritte des Wizards:
 
-| 1. Hauptmenue (Wizard Start) | 2. Sicherheitsabfrage (Datenloeschung) |
+| 1. Hauptmenue (Wizard Start) | 2. App Ansicht |
 |:---:|:---:|
-| ![Hauptmenue](screen1.png) | ![Sicherheitsabfrage](screen2.png) |
+| ![Hauptmenue](images/screen1.png) | ![App Ansicht](images/screen2.png) |
 
-| 3. Kapazitaetstest (Schreibvorgang) | 4. Echtheitspruefung (Lesevorgang) |
+| 3. Sicherheitswarnung | 4. Information |
 |:---:|:---:|
-| ![Schreibvorgang laeuft](screen3.png) | ![Pruefvorgang laeuft](screen4.png) |
+| ![Sicherheitswarnung](images/screen3.png) | ![Information](images/screen4.png) |
 
-| 5. Mini-Speed-Test (dd Cache-Bypass) | 6. Finale Test-Zusammenfassung |
+| 5. Prozess Fortschrittsanzeige (.h2w Files) | 6. Verifikation |
 |:---:|:---:|
-| ![Mini-Speed-Test](screen5.png) | ![Test-Zusammenfassung](screen6.png) |
+| ![Prozess Fortschrittsanzeige](images/screen5.png) | ![Verifikation](images/screen6.png) |
+
+| 7. Verifikation (Datenvalidierung) | 8. Finale Test-Zusammenfassung |
+|:---:|:---:|
+| ![Verifikation](images/screen7.png) | ![Test-Zusammenfassung](images/screen8.png) |
 
 ---
 
