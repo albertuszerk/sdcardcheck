@@ -65,7 +65,7 @@ while true; do
         "START" "$TXT_BTN_START" \
         "UNINSTALL" "$TXT_BTN_UNINSTALL" \
         "EXIT" "$TXT_BTN_EXIT" \
-        --width=650 --height=250 --hide-header)
+        --width=650 --height=350 --hide-header)
 
     if [ $? -ne 0 ] || [ "$ACTION" == "EXIT" ]; then
         break
