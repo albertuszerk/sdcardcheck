@@ -12,6 +12,7 @@ if [ "$APP_LANG" == "en" ]; then
     # ENGLISCH (Aktuell Platzhalter in Deutsch bis zum GO)
     TXT_WELCOME="Willkommen beim App-Wizard.\nBitte waehle eine Aktion:"
     TXT_BTN_START="SD-Karte/Laufwerk testen"
+    TXT_BTN_UNINSTALL="App komplett vom System entfernen"
     TXT_BTN_EXIT="Wizard beenden"
     TXT_SEL_DRIVE="a) Laufwerk auswaehlen (z.B. unter /media/)"
     TXT_WARN_TITLE="b) Sicherheitsabfrage"
@@ -28,10 +29,12 @@ if [ "$APP_LANG" == "en" ]; then
     TXT_SPEED_TEXT="Starte nun den Mini-Test (Lesen/Schreiben von 500MB)."
     TXT_SUMMARY_TITLE="Test-Zusammenfassung"
     TXT_SUMMARY_TEXT="<b>Test abgeschlossen!</b>\n\n<b>Laufwerk (Hardware):</b> %s\n<b>Theoretische Kapazitaet:</b> %s\n<b>Reale Kapazitaet (ermittelt):</b> %s\n\n<b>1. Status:</b>\n%s\n\n<b>2. Mini-Speed-Test:</b>\n%s\n\n<i>Alle Arbeitsdaten wurden geloescht. Das Laufwerk ist leer.</i>"
+    TXT_UNINSTALL_OK="App und Menue-Eintrag wurden restlos vom System entfernt."
 else
     # DEUTSCH (Standard)
     TXT_WELCOME="Willkommen beim App-Wizard.\nBitte waehle eine Aktion:"
     TXT_BTN_START="SD-Karte/Laufwerk testen"
+    TXT_BTN_UNINSTALL="App komplett vom System entfernen"
     TXT_BTN_EXIT="Wizard beenden"
     TXT_SEL_DRIVE="a) Laufwerk auswaehlen (z.B. unter /media/)"
     TXT_WARN_TITLE="b) Sicherheitsabfrage"
@@ -48,6 +51,7 @@ else
     TXT_SPEED_TEXT="Starte nun den Mini-Test (Lesen/Schreiben von 500MB)."
     TXT_SUMMARY_TITLE="Test-Zusammenfassung"
     TXT_SUMMARY_TEXT="<b>Test abgeschlossen!</b>\n\n<b>Laufwerk (Hardware):</b> %s\n<b>Theoretische Kapazitaet:</b> %s\n<b>Reale Kapazitaet (ermittelt):</b> %s\n\n<b>1. Status:</b>\n%s\n\n<b>2. Mini-Speed-Test:</b>\n%s\n\n<i>Alle Arbeitsdaten wurden geloescht. Das Laufwerk ist leer.</i>"
+    TXT_UNINSTALL_OK="App und Menue-Eintrag wurden restlos vom System entfernt."
 fi
 # --- ENDE SPRACH-VARIABLEN ---
 
@@ -59,10 +63,19 @@ while true; do
         --text="$TXT_WELCOME" \
         --column="Aktion" --column="Beschreibung" \
         "START" "$TXT_BTN_START" \
+        "UNINSTALL" "$TXT_BTN_UNINSTALL" \
         "EXIT" "$TXT_BTN_EXIT" \
         --width=650 --height=250 --hide-header)
 
     if [ $? -ne 0 ] || [ "$ACTION" == "EXIT" ]; then
+        break
+    fi
+
+    if [ "$ACTION" == "UNINSTALL" ]; then
+        rm -f ~/.local/bin/sdcardcheck.sh
+        rm -f ~/.local/share/applications/sdcardcheck.desktop
+        update-desktop-database ~/.local/share/applications/ 2>/dev/null
+        zenity --info --title="Deinstallation" --text="$TXT_UNINSTALL_OK"
         break
     fi
 
@@ -91,7 +104,6 @@ while true; do
 
         zenity --info --title="Test startet" --text="$TXT_INFO_START" --timeout=3
 
-        # Kapazitaet - Schreiben (mit stdbuf fuer Live-Updates im GUI)
         stdbuf -o0 f3write "$TARGET_DIR" | stdbuf -o0 tr '\r' '\n' | while IFS= read -r line; do echo "# $line"; done | zenity --progress --title="$TXT_PROG_WRITE" --text="$TXT_INIT" --pulsate --auto-close --auto-kill --width=600
         
         if [ ${PIPESTATUS[0]} -ne 0 ]; then
@@ -99,7 +111,6 @@ while true; do
             RESULT_CAP="FEHLGESCHLAGEN (Schreibfehler)"
             REAL_SIZE="Konnte nicht geschrieben werden"
         else
-            # Kapazitaet - Lesen (mit stdbuf fuer Live-Updates im GUI)
             rm -f /tmp/f3read.log
             stdbuf -o0 f3read "$TARGET_DIR" | stdbuf -o0 tee /tmp/f3read.log | stdbuf -o0 tr '\r' '\n' | while IFS= read -r line; do echo "# $line"; done | zenity --progress --title="$TXT_PROG_READ" --text="$TXT_VERIFYING" --pulsate --auto-close --auto-kill --width=600
 
