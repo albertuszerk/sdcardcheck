@@ -70,7 +70,6 @@ while true; do
         TARGET_DIR=$(zenity --file-selection --directory --title="$TXT_SEL_DRIVE")
         if [ -z "$TARGET_DIR" ]; then continue; fi
 
-        # --- NEU: Hardware-Informationen & Groesse auslesen ---
         DEVICE=$(df -P "$TARGET_DIR" | tail -1 | awk '{print $1}')
         PARENT=$(lsblk -no PKNAME "$DEVICE" 2>/dev/null)
         if [ -z "$PARENT" ]; then PARENT_DEV="$DEVICE"; else PARENT_DEV="/dev/$PARENT"; fi
@@ -79,7 +78,6 @@ while true; do
         if [ -z "$DRIVE_MODEL" ]; then DRIVE_MODEL="Unbekannt (Standard-Controller)"; fi
         
         THEO_SIZE=$(df -h "$TARGET_DIR" | tail -1 | awk '{print $2}')
-        # ------------------------------------------------------
 
         WARN_MSG=$(printf "$TXT_WARN_TEXT" "$TARGET_DIR")
         zenity --question --title="$TXT_WARN_TITLE" --text="$WARN_MSG" --icon-name=dialog-warning
@@ -93,23 +91,22 @@ while true; do
 
         zenity --info --title="Test startet" --text="$TXT_INFO_START" --timeout=3
 
-        # Kapazitaet - Schreiben
-        f3write "$TARGET_DIR" | awk -v RS='\r' '{print "# "$0; fflush();}' | zenity --progress --title="$TXT_PROG_WRITE" --text="$TXT_INIT" --pulsate --auto-close --auto-kill --width=450
+        # Kapazitaet - Schreiben (mit stdbuf fuer Live-Updates im GUI)
+        stdbuf -o0 f3write "$TARGET_DIR" | stdbuf -o0 tr '\r' '\n' | while IFS= read -r line; do echo "# $line"; done | zenity --progress --title="$TXT_PROG_WRITE" --text="$TXT_INIT" --pulsate --auto-close --auto-kill --width=600
         
         if [ ${PIPESTATUS[0]} -ne 0 ]; then
             zenity --error --text="$TXT_ERR_WRITE"
             RESULT_CAP="FEHLGESCHLAGEN (Schreibfehler)"
             REAL_SIZE="Konnte nicht geschrieben werden"
         else
-            # Kapazitaet - Lesen (Mit Log-File fuer exakte Auswertung)
+            # Kapazitaet - Lesen (mit stdbuf fuer Live-Updates im GUI)
             rm -f /tmp/f3read.log
-            f3read "$TARGET_DIR" | tee /tmp/f3read.log | awk -v RS='\r' '{print "# "$0; fflush();}' | zenity --progress --title="$TXT_PROG_READ" --text="$TXT_VERIFYING" --pulsate --auto-close --auto-kill --width=450
+            stdbuf -o0 f3read "$TARGET_DIR" | stdbuf -o0 tee /tmp/f3read.log | stdbuf -o0 tr '\r' '\n' | while IFS= read -r line; do echo "# $line"; done | zenity --progress --title="$TXT_PROG_READ" --text="$TXT_VERIFYING" --pulsate --auto-close --auto-kill --width=600
 
             if [ ${PIPESTATUS[0]} -ne 0 ]; then
                 zenity --error --text="$TXT_ERR_READ"
                 RESULT_CAP="FEHLGESCHLAGEN (Fake/Defekt)"
                 
-                # --- NEU: Reale Groesse aus dem Log abgreifen ---
                 REAL_SIZE=$(grep "Data OK:" /tmp/f3read.log | awk '{print $3" "$4}')
                 if [ -z "$REAL_SIZE" ]; then REAL_SIZE="0.00 Byte (Totalausfall)"; fi
             else
