@@ -86,4 +86,86 @@ while true; do
         --text="$TXT_WELCOME" \
         --column="Aktion" --column="Beschreibung" \
         "START" "$TXT_BTN_START" \
-        "UNINSTALL" "$TXT
+        "UNINSTALL" "$TXT_BTN_UNINSTALL" \
+        "EXIT" "$TXT_BTN_EXIT" \
+        --width=650 --height=350 --hide-header)
+
+    if [ $? -ne 0 ] || [ "$ACTION" == "EXIT" ]; then
+        break
+    fi
+
+    if [ "$ACTION" == "UNINSTALL" ]; then
+        rm -f ~/.local/bin/sdcardcheck.sh
+        rm -f ~/.local/share/applications/sdcardcheck.desktop
+        update-desktop-database ~/.local/share/applications/ 2>/dev/null
+        zenity --info --title="Deinstallation" --text="$TXT_UNINSTALL_OK"
+        break
+    fi
+
+    if [ "$ACTION" == "START" ]; then
+        TARGET_DIR=$(zenity --file-selection --directory --title="$TXT_SEL_DRIVE")
+        if [ -z "$TARGET_DIR" ]; then continue; fi
+
+        DEVICE=$(df -P "$TARGET_DIR" | tail -1 | awk '{print $1}')
+        PARENT=$(lsblk -no PKNAME "$DEVICE" 2>/dev/null)
+        if [ -z "$PARENT" ]; then PARENT_DEV="$DEVICE"; else PARENT_DEV="/dev/$PARENT"; fi
+        
+        DRIVE_MODEL=$(lsblk -no VENDOR,MODEL "$PARENT_DEV" | xargs)
+        if [ -z "$DRIVE_MODEL" ]; then DRIVE_MODEL="Unbekannt (Standard-Controller)"; fi
+        
+        THEO_SIZE=$(df -h "$TARGET_DIR" | tail -1 | awk '{print $2}')
+
+        WARN_MSG=$(printf "$TXT_WARN_TEXT" "$TARGET_DIR")
+        zenity --question --title="$TXT_WARN_TITLE" --text="$WARN_MSG" --icon-name=dialog-warning
+        if [ $? -ne 0 ]; then continue; fi
+
+        rm -rf "$TARGET_DIR"/*
+        if [ $? -ne 0 ]; then
+            zenity --error --text="$TXT_ERR_PERM"
+            continue
+        fi
+
+        zenity --info --title="Test startet" --text="$TXT_INFO_START" --timeout=3
+
+        stdbuf -o0 f3write "$TARGET_DIR" | stdbuf -o0 tr '\r' '\n' | while IFS= read -r line; do echo "# $line"; done | zenity --progress --title="$TXT_PROG_WRITE" --text="$TXT_INIT" --pulsate --auto-close --auto-kill --width=600
+        
+        if [ ${PIPESTATUS[0]} -ne 0 ]; then
+            zenity --error --text="$TXT_ERR_WRITE"
+            RESULT_CAP="$TXT_RES_WRITE_ERR"
+            REAL_SIZE="$TXT_RES_NO_WRITE"
+        else
+            rm -f /tmp/f3read.log
+            stdbuf -o0 f3read "$TARGET_DIR" | stdbuf -o0 tee /tmp/f3read.log | stdbuf -o0 tr '\r' '\n' | while IFS= read -r line; do echo "# $line"; done | zenity --progress --title="$TXT_PROG_READ" --text="$TXT_VERIFYING" --pulsate --auto-close --auto-kill --width=600
+
+            if [ ${PIPESTATUS[0]} -ne 0 ]; then
+                zenity --error --text="$TXT_ERR_READ"
+                RESULT_CAP="$TXT_RES_FAKE"
+                
+                REAL_SIZE=$(grep "Data OK:" /tmp/f3read.log | awk '{print $3" "$4}')
+                if [ -z "$REAL_SIZE" ]; then REAL_SIZE="$TXT_RES_TOTAL_FAIL"; fi
+            else
+                RESULT_CAP="$TXT_RES_PASS"
+                REAL_SIZE="$THEO_SIZE $TXT_RES_VERIFIED"
+            fi
+        fi
+
+        rm -f "$TARGET_DIR"/*.h2w
+
+        zenity --info --title="$TXT_SPEED_TITLE" --text="$TXT_SPEED_TEXT" --timeout=3
+        
+        TEST_FILE="$TARGET_DIR/xcheck_speed.bin"
+        
+        WRITE_OUT=$(LC_ALL=C dd if=/dev/zero of="$TEST_FILE" bs=1M count=500 conv=fdatasync 2>&1 | grep "copied" | awk -F', ' '{print $NF}')
+        READ_OUT=$(LC_ALL=C dd if="$TEST_FILE" of=/dev/null bs=1M count=500 iflag=direct 2>&1 | grep "copied" | awk -F', ' '{print $NF}')
+        
+        if [ -z "$WRITE_OUT" ]; then WRITE_OUT="$TXT_ERR_MEASURE"; fi
+        if [ -z "$READ_OUT" ]; then READ_OUT="$TXT_ERR_MEASURE"; fi
+
+        SPEED_VAL="$TXT_SPEED_WRITE: $WRITE_OUT\n$TXT_SPEED_READ: $READ_OUT"
+
+        rm -f "$TEST_FILE"
+
+        SUMMARY_MSG=$(printf "$TXT_SUMMARY_TEXT" "$DRIVE_MODEL" "$THEO_SIZE" "$REAL_SIZE" "$RESULT_CAP" "$SPEED_VAL")
+        zenity --info --title="$TXT_SUMMARY_TITLE" --text="$SUMMARY_MSG"
+    fi
+done
