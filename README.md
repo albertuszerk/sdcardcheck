@@ -41,10 +41,10 @@ Hier finden Sie eine Uebersicht der einzelnen Schritte des Wizards:
 Das Projekt laesst sich mit einem einzigen Befehl direkt ueber das Terminal einrichten. Es wird ein vollwertiger Starter im Zorin-Startmenue hinterlegt.
 
 ### Standard-Installation (Deutsch)
-```bash <(curl -sL (https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/install.sh))```
+```bash <(curl -sL https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/install.sh)```
 
 ### Installation mit Sprachparameter (Englisch)
-```bash <(curl -sL (https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/install.sh)) en```
+```bash <(curl -sL https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/install.sh) en```
 
 ---
 
@@ -58,7 +58,7 @@ Oeffnen Sie die App ueber das Startmenue und waehlen Sie die Option **"UNINSTALL
 ### Methode 2: Ueber das Terminal (Manueller Befehl)
 Fuehren Sie folgenden Befehl aus, um eine vollstaendige Deinstallation durchzufuehren:
 
-```bash <(curl -sL (https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/uninstall.sh))```
+```bash <(curl -sL https://raw.githubusercontent.com/albertuszerk/sdcardcheck/main/uninstall.sh)```
 
 > **DIESER BEFEHL FUEHRT EINE VOLLSTAENDIGE DEINSTALLATION DURCH UND ENTFERNT ALLE VERKNUEPFUNGEN.**
 
